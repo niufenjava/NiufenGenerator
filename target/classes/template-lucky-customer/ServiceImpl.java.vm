@@ -1,0 +1,82 @@
+package ${modulePackage}.service.impl;
+
+import com.lucky.customerservice.util.ListUtils;
+import com.lucky.customerservice.util.MapUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import com.lucky.base.pagequery.PaginationResult;
+import ${package}.base.impl.BaseServiceImpl;
+import ${package}.util.ObjectTools;
+import ${package}.util.PageUtils;
+import ${modulePackage}.ao.${className}CreateAO;
+import ${modulePackage}.ao.${className}PageQueryAO;
+import ${modulePackage}.bo.${className}BO;
+import ${modulePackage}.dao.${className}DaoImpl;
+import ${modulePackage}.entity.${className}Entity;
+import ${modulePackage}.service.${className}Service;
+
+/**
+ * @Description ${comments} ServiceImpl
+ * @Author ${email}
+ * @Date ${datetime}
+ */
+@Service
+public class ${className}ServiceImpl extends BaseServiceImpl<${className}DaoImpl, ${className}Entity> implements ${className}Service {
+
+    /**
+     * 日志
+     */
+    private static final Logger LOGGER = LoggerFactory.getLogger(${className}ServiceImpl.class);
+
+    @Override
+    public PaginationResult<${className}BO> pageQuery(${className}PageQueryAO ${classname}PageQueryAO) {
+        PaginationResult<${className}BO> resultPageData = PageUtils.newPage();
+        List<${className}BO> ${classname}BOList = ListUtils.newLinkedList();
+        Map<String, Object> params = MapUtils.convert2Map(${classname}PageQueryAO);
+        PaginationResult<${className}Entity> pageData = this.page(params);
+        if (ObjectTools.isNotNull(pageData)) {
+            for (${className}Entity ${classname}Entity : pageData.getRows()) {
+                    ${className}BO ${classname}EntityBO = new ${className}BO();
+                BeanUtils.copyProperties(${classname}Entity, ${classname}EntityBO);
+                //下面是参考
+                // ${classname}EntityBO.setStatusDesc(${className}StatusEnum.getNameByIndex(${classname}EntityBO.getStatus()));
+                ${classname}BOList.add(${classname}EntityBO);
+            }
+            resultPageData.setRows(${classname}BOList);
+            resultPageData.setTotal(pageData.getTotal());
+        }
+        return resultPageData;
+    }
+
+    @Override
+    public ${className}BO getDetail(Long id) {
+            ${className}BO ${classname}BO = new ${className}BO();
+            ${className}Entity ${classname}Entity = this.getById(id);
+        if (ObjectTools.isNotNull(${classname}Entity)) {
+            BeanUtils.copyProperties(${classname}Entity, ${classname}BO);
+            //参考  ${classname}BO.setStatusDesc(${className}StatusEnum.getNameByIndex(${classname}BO.getStatus()));
+        }
+        return ${classname}BO;
+    }
+
+    /**
+     * 新建一个工作流
+     * @param ${classname}CreateAO
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void create(${className}CreateAO ${classname}CreateAO) {
+            ${className}Entity ${classname}Entity = new ${className}Entity();
+            ${classname}Entity.setCreatorId(${classname}CreateAO.getCurUserId());
+            ${classname}Entity.setCreateTime(new Date());
+        this.save(${classname}Entity);
+    }
+}
+

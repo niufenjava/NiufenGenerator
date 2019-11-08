@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="${className}DaoImpl">
+
+    <!-- 单表操作通用字段 -->
+    <sql id="baseColumnList">
+#foreach($column in $columns)
+    #if($column.columnName == "modifiy_time")
+        ${column.columnName}
+    #else
+        ${column.columnName},
+    #end
+#end
+    </sql>
+
+    <!-- 单表 -->
+    <sql id="fromTable">
+        from ${tableName}
+    </sql>
+
+    <!-- 单表查询条件，默认  create_time <![CDATA[ >= ]]> #startCreateTime#  AND  create_time <![CDATA[ <= ]]> #endCreateTime# -->
+    <sql id="baseQueryParams">
+        1=1
+#foreach($column in $columns)
+    #if($column.columnName == "create_time")
+    <isNotEmpty prepend="and" property="startCreateTime">
+        create_time <![CDATA[ >= ]]> #startCreateTime#
+    </isNotEmpty>
+     <isNotEmpty prepend="and" property="endCreateTime">
+        create_time <![CDATA[ <= ]]> #endCreateTime#
+    </isNotEmpty>
+    #else
+    <isNotEmpty prepend="and" property="${column.attrname}">
+        ${column.columnName} = #${column.attrname}#
+    </isNotEmpty>
+    #end
+#end
+    </sql>
+
+    <!-- 单表返回实体对象 -->
+    <resultMap id="baseResultMap" class="${package}.${moduleName}.entity.${className}Entity">
+    #foreach($column in $columns)
+        <result property="${column.attrname}" jdbcType="${column.dataType}" column="${column.columnName}"/>
+    #end
+    </resultMap>
+
+    <!-- 插入一条数据，ID由数据库自增，自动赋值到当前的 entity类 -->
+    <insert id="insert" parameterClass="${package}.${moduleName}.entity.${className}Entity">
+        insert into ${tableName} (
+#foreach($column in $columns)
+    #if($column.columnName != "modifiy_time")
+        ${column.columnName},
+    #else
+        ${column.columnName}
+    #end
+#end
+        )
+        values (
+#foreach($column in $columns)
+    #if($column.attrname != "modifiyTime")
+        #${column.attrname}#,
+    #else
+        #${column.attrname}#
+    #end
+#end
+        )
+        <selectKey resultClass="long" keyProperty="id">
+            SELECT last_insert_id() as id;
+        </selectKey>
+    </insert>
+
+    <!-- 根据 ID 删除一条数据 -->
+    <delete id="deleteById" parameterClass="java.lang.Long">
+        delete from ${tableName} where id = #id#
+    </delete>
+
+    <!-- 根据 ID 更新一条数据 -->
+    <update id="updateById" parameterClass="${package}.${moduleName}.entity.${className}Entity">
+        update ${tableName} set id = #id#
+#foreach($column in $columns)
+        <isNotEmpty prepend="," property="${column.attrname}">
+            ${column.columnName} = #${column.attrname}#
+        </isNotEmpty>
+        #end
+        where id = #id#
+    </update>
+
+    <!-- 根据 ID 获取一个实体 -->
+    <select id="getById" parameterClass="java.lang.Long" resultMap="baseResultMap">
+        select
+        <include refid="baseColumnList"/>
+        <include refid="fromTable"/>
+        where id = #id#
+    </select>
+
+    <!-- 根据 Map params 查询参数，进行列表查询，TODO 排序自己根据业务调整, 保护操作:limit 5000  -->
+    <select id="listByParams" parameterClass="java.util.Map" resultMap="baseResultMap">
+        SELECT
+        <include refid="baseColumnList"/>
+        <include refid="fromTable"/>
+        WHERE
+        <include refid="baseQueryParams"/>
+        <isNotEmpty prepend=" order by " property="sort"> $sort$ $order$</isNotEmpty>
+        limit 5000
+    </select>
+
+    <!-- 根据 Map params 查询参数，进行分页查询，TODO 排序自己根据业务调整，默认create_time；pageNo、pageSize 必须 -->
+    <select id="pageByParams" parameterClass="java.util.Map" resultMap="baseResultMap">
+        SELECT
+        <include refid="baseColumnList"/>
+        <include refid="fromTable"/>
+        WHERE
+        <include refid="baseQueryParams"/>
+        <isEmpty prepend=" order by " property="sort">create_time DESC</isEmpty>
+        <isNotEmpty prepend=" order by " property="sort"> $sort$ $order$</isNotEmpty>
+        Limit #start#,#size#
+    </select>
+
+    <!-- 根据 Map params 查询参数，进行分页查询，TODO 排序自己根据业务调整，默认create_time -->
+    <select id="countByParams" parameterClass="java.util.Map" resultClass="java.lang.Long">
+        SELECT
+            count(1)
+        <include refid="fromTable"/>
+        WHERE
+        <include refid="baseQueryParams"/>
+    </select>
+
+</sqlMap>

@@ -1,0 +1,100 @@
+package ${modulePackage}.controller;
+
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import org.springframework.web.servlet.ModelAndView;
+import javax.servlet.http.HttpServletRequest;
+
+import com.lucky.customerservice.util.ResultMsg;
+import ${modulePackage}.ao.${className}PageQueryAO;
+import ${modulePackage}.ao.${className}CreateAO;
+import ${modulePackage}.service.${className}Service;
+
+/**
+ * @Description ${comments} Controller
+ * @Author ${email}
+ * @Date ${datetime}
+ */
+@RequestMapping("${pathName}")
+public class ${className}Controller {
+
+    /**
+     * 日志
+     */
+    private static final Logger LOGGER = LoggerFactory.getLogger(${className}Controller.class);
+
+    @Autowired
+    public ${className}Service ${classname}Service;
+
+    /**
+     * 分页查询 DEMO
+     * @return ModelAndView 模型视图
+     */
+    @RequestMapping(value = "/toPage", method = RequestMethod.GET)
+    public ModelAndView toPage() {
+        //TODO THIS IS A DEMO
+        ModelAndView view = new ModelAndView("/page/${moduleName}/${className}Page.jsp");
+        return view;
+    }
+
+    /**
+     * 跳转到编辑页面 DEMO
+     * @param id 主键
+     * @return ModelAndView 模型视图
+    */
+    @RequestMapping(value = "/toEdit")
+    public ModelAndView toEdit(@RequestParam(value = "id", required = false) Long id) {
+        //TODO THIS IS A DEMO
+        ModelAndView view = new ModelAndView("/page/${moduleName}/${className}Info.jsp");
+        return view;
+    }
+
+    /**
+     * 保存 DEMO 有ID则更新，无ID则新建
+     * @param ${className}CreateAO 创建AO
+     * @return ResultMsg 通用返回结果
+     */
+    @RequestMapping(value = "/create", method = RequestMethod.POST)
+    @ResponseBody
+    public ResultMsg create(${className}CreateAO ${className}CreateAO){
+        //TODO THIS IS A DEMO
+        //凡是有可能抛异常的地方都用try catch,没有用统一异常是因为代码太老，怕影响到老代码逻辑
+        try {
+            ${classname}Service.create(${className}CreateAO);
+        }catch (Exception e){
+            LOGGER.error(e.getMessage());
+            ResultMsg.error("错误信息："+e.getMessage());
+        }
+
+        return ResultMsg.success();
+    }
+
+    /**
+     * 根据 ID 查询详情
+     * @param id 主键
+     * @return ${comments}详情
+     */
+    @GetMapping("/detail/{id}")
+    public ResultMsg detailById(@PathVariable("id") Long id){
+        //TODO THIS IS A DEMO
+        return ResultMsg.success(${classname}Service.getById(id));
+    }
+
+    /**
+     * 分页查询 ${comments}
+     * @param ${className}PageQueryAO 分页查询条件
+     * @return ResultMsg ${comments} 分页返回对象
+     */
+    @PostMapping("/pageQuery")
+    public ResultMsg pageQuery(${className}PageQueryAO ${className}PageQueryAO){
+        //TODO THIS IS A DEMO
+        //业务逻辑
+        return ResultMsg.success(${classname}Service.pageQuery(${className}PageQueryAO));
+    }
+
+}
+

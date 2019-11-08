@@ -1,0 +1,43 @@
+package ${modulePackage}.service;
+
+import ${basePackage}.BaseService;
+import ${modulePackage}.entity.${className}Entity;
+
+import com.lucky.base.pagequery.PaginationResult;
+import ${basePackage}.BaseService;
+import ${modulePackage}.ao.${className}CreateAO;
+import ${modulePackage}.ao.${className}PageQueryAO;
+import ${modulePackage}.bo.${className}BO;
+import ${modulePackage}.entity.${className}Entity;
+import org.springframework.transaction.annotation.Transactional;
+
+/**
+ * @Description ${comments} Service
+ * @Author ${email}
+ * @Date ${datetime}
+ */
+public interface ${className}Service extends BaseService<${className}Entity> {
+
+    /**
+     * 分页查询-${comments}
+     * @param ${classname}PageQueryAO ${comments}-查询对象
+     * @return ${className}BO ${comments}-BO分页结构
+    */
+    PaginationResult<${className}BO> pageQuery(${className}PageQueryAO ${classname}PageQueryAO);
+
+    /**
+     * 获取工作流详情
+     * @param id 工作流ID
+     * @return 工作流BO对象
+     */
+    ${className}BO getDetail(Long id);
+
+    /**
+     * 创建 ${comments}
+     * @param ${classname}CreateAO
+     */
+    @Transactional(rollbackFor = Exception.class)
+    void create(${className}CreateAO ${classname}CreateAO);
+
+}
+

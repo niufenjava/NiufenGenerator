@@ -1,0 +1,18 @@
+package ${modulePackage}.dao;
+
+import ${basePackage}.impl.BaseDaoImpl;
+import ${modulePackage}.entity.${className}Entity;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+import java.util.Map;
+
+/**
+ * @Description ${comments} DaoImpl
+ * @Author ${email}
+ * @Date ${datetime}
+ */
+@Repository
+public class ${className}DaoImpl extends BaseDaoImpl<${className}Entity> {
+
+}
