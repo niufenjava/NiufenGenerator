@@ -7,7 +7,7 @@ spring:
     type: com.alibaba.druid.pool.DruidDataSource
     #MySQL配置
     driverClassName: com.mysql.jdbc.Driver
-    url: jdbc:mysql://10.104.51.12:3306/lucky_customerservice?useUnicode=true&characterEncoding=UTF-8&useSSL=false
+    url: jdbc:mysql://10.104.249.47:3306/lucky_customerservice?useUnicode=true&characterEncoding=UTF-8&useSSL=false
     username: dev_test1
     password: dev_test1
   jackson:
