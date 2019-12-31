@@ -7,9 +7,9 @@ spring:
     type: com.alibaba.druid.pool.DruidDataSource
     #MySQL配置
     driverClassName: com.mysql.jdbc.Driver
-    url: jdbc:mysql://10.104.249.47:3306/lucky_customerservice?useUnicode=true&characterEncoding=UTF-8&useSSL=false
-    username: dev_test1
-    password: dev_test1
+    url: jdbc:mysql://127.0.0.1:3306/customerservice?useUnicode=true&characterEncoding=UTF-8&useSSL=false
+    username: root
+    password: 2222
   jackson:
     time-zone: GMT+8
     date-format: yyyy-MM-dd HH:mm:ss
